@@ -3,7 +3,7 @@ import os
 import calendar
 
 
-def read_excel_data(dir_path: str, file_name: str, blank_row: int):
+def read_usbls_data(dir_path: str, file_name: str, blank_row: int):
     # Construct the full file path
     full_path = os.path.join(dir_path, file_name)
     # Read the Excel file
@@ -25,14 +25,14 @@ def concatenate_usbls_files(dir_path: str, blank_row: int, year_range: tuple = (
     files = os.listdir(dir_path)
     month_to_num = {name[:3]: num for num, name in enumerate(calendar.month_abbr) if num}
     for file in files:
-        df = read_excel_data(dir_path, file, blank_row)
+        df = read_usbls_data(dir_path, file, blank_row)
         df.reset_index(inplace=True)
         df['Month'] = df['Month'].map(month_to_num)
         df.set_index(['Year', 'Month'], inplace=True)
         if combined_df is None:
             combined_df = df
         else:
-            combined_df = pd.merge(combined_df, df, left_index=True, right_index=True, how='left')
+            combined_df = pd.merge(combined_df, df, left_index=True, right_index=True, how='right')
     combined_df.sort_index(inplace=True)
 
     # Filter the data based on the year range
