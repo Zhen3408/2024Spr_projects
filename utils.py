@@ -3,6 +3,19 @@ import os
 import calendar
 
 
+# Define global variable:
+isced_education_mapping = {
+    'Less than primary education': 'Less than a high school diploma',
+    'Below upper secondary education': 'Less than a high school diploma',
+    'Upper secondary education': 'High school graduates, no college',
+    'Completion of intermediate upper secondary programmes': 'High school graduates, no college',
+    'Post-secondary non-tertiary education': 'Some college or associate degree',
+    'Short-cycle tertiary education': 'Some college or associate degree',
+    'Bachelor’s or equivalent education': "Bachelor's degree",
+    'Master’s or equivalent education': "Master's degree",
+    'Doctoral or equivalent education': "Doctoral degree"
+}
+
 def read_usbls_data(dir_path: str, file_name: str, blank_row: int):
     # Construct the full file path
     full_path = os.path.join(dir_path, file_name)
@@ -61,3 +74,76 @@ def merge_eurostat_data(dir_path: str) -> pd.DataFrame:
         else:
             combined_df = pd.merge(combined_df, new_df, left_index=True, right_index=True, how='left')
     return combined_df
+
+
+def process_onsgovuk_data(file_path: str) -> pd.DataFrame:
+    df_uk = pd.read_csv(file_path)
+    df_uk['time'] = pd.to_datetime(df_uk['time'].str.split('-').str[0], format='%b%Y')  # Extract the month and year
+    # Ensure the 'value' column is numeric
+    df_uk['value'] = pd.to_numeric(df_uk['value'], errors='coerce')
+    # Group the data by 'time' and 'ethnicity', and calculate the average unemployment rate of different geographic
+    # regions
+    average_unemployment_by_race = df_uk.groupby(['time', 'ethnicity'])['value'].mean().reset_index()
+    # Pivot the table again to get the desired format with 'time' as the index
+    average_unemployment_by_race = average_unemployment_by_race.pivot_table(index='time', columns='ethnicity', values='value')
+    average_unemployment_by_race = average_unemployment_by_race.filter(items=['Asian', 'Black', 'White', 'Mixed', 'Other'])
+    average_unemployment_by_race = average_unemployment_by_race.dropna(how='all')
+    return average_unemployment_by_race
+
+
+def process_oecd_education_data(file_path: str):
+    df_oecd_education = pd.read_csv(file_path)
+    df_oecd_education.rename(columns={'ISCED 2011 A education level': 'Education Level'}, inplace=True)
+    # Group the data by 'Country' and 'Education Level', to calculate the average unemployment rate over years
+    df_oecd_education = df_oecd_education.groupby(['Country', 'Education Level'])['Value'].mean().reset_index()
+    # List of European countries according to the United Nations geoscheme for Europe.
+    european_countries = [
+        'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium',
+        'Bosnia and Herzegovina', 'Bulgaria', 'Croatia', 'Cyprus', 'Czech Republic',
+        'Denmark', 'Estonia', 'Finland', 'France', 'Georgia', 'Germany', 'Greece',
+        'Hungary', 'Iceland', 'Ireland', 'Italy', 'Kazakhstan', 'Kosovo', 'Latvia',
+        'Liechtenstein', 'Lithuania', 'Luxembourg', 'Malta', 'Moldova', 'Monaco',
+        'Montenegro', 'Netherlands', 'North Macedonia', 'Norway', 'Poland', 'Portugal',
+        'Romania', 'Russia', 'San Marino', 'Serbia', 'Slovakia', 'Slovenia', 'Spain',
+        'Sweden', 'Switzerland', 'Turkey', 'Ukraine', 'United Kingdom', 'Vatican City'
+    ]
+
+    # Filter out non-European countries
+    df_oecd_education_europe = df_oecd_education[df_oecd_education['Country'].isin(european_countries)]
+    # Reset index after filtering
+    df_oecd_education_europe = df_oecd_education_europe.reset_index(drop=True)
+
+    # Reference the global variable dictionary to map ISCED defined education levels to the generic education levels
+    global isced_education_mapping
+
+    # Apply the mapping to create a new 'General Education Level' column
+    df_oecd_education_europe['General Education Level'] = df_oecd_education_europe['Education Level'].map(
+        isced_education_mapping)
+
+    # Group by the 'Country' and the new 'Generic Education Level' and calculate the mean of 'Value'
+    df_oecd_education_grouped = \
+    df_oecd_education_europe.groupby(['Country', 'General Education Level'], as_index=False)['Value'].mean()
+
+    # Pivot the dataframe to reshape it for plotting
+    pivot_df = df_oecd_education_grouped.pivot(index='Country', columns='General Education Level', values='Value')
+    # Reset index to make 'Country' a column again
+    pivot_df.reset_index(inplace=True)
+    # Melt the DataFrame to have proper format for seaborn's barplot
+    melted_df = pivot_df.melt(id_vars='Country', var_name='Education Level', value_name='Unemployment Rate')
+
+    # Define the desired order of education levels, from low to high
+    education_level_order = [
+        'Less than a high school diploma',
+        'High school graduates, no college',
+        'Some college or associate degree',
+        "Bachelor's degree",
+        "Master's degree",
+        "Doctoral degree"
+    ]
+    # Convert the 'Education Level' column to a categorical type with the specified order for better viewing
+    melted_df['Education Level'] = pd.Categorical(
+        melted_df['Education Level'],
+        categories=education_level_order,
+        ordered=True
+    )
+    return melted_df
