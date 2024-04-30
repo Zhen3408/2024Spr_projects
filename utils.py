@@ -13,8 +13,34 @@ isced_education_mapping = {
     'Short-cycle tertiary education': 'Some college or associate degree',
     'Bachelor’s or equivalent education': "Bachelor's degree",
     'Master’s or equivalent education': "Master's degree",
-    'Doctoral or equivalent education': "Doctoral degree"
+    'Doctoral or equivalent education': "Doctoral degree",
+    'Primary education': 'Less than a high school diploma',
+    'Tertiary education': "Bachelor's degree",
+    'Upper secondary or post-secondary non-tertiary education': 'Some college or associate degree',
+    'Lower secondary education': 'Less than a high school diploma',
+    'Completion of intermediate lower secondary programmes': 'Less than a high school diploma'
 }
+
+
+european_countries = [
+    'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium',
+    'Bosnia and Herzegovina', 'Bulgaria', 'Croatia', 'Cyprus', 'Czech Republic',
+    'Denmark', 'Estonia', 'Finland', 'France', 'Georgia', 'Germany', 'Greece',
+    'Hungary', 'Iceland', 'Ireland', 'Italy', 'Kazakhstan', 'Kosovo', 'Latvia',
+    'Liechtenstein', 'Lithuania', 'Luxembourg', 'Malta', 'Moldova', 'Monaco',
+    'Montenegro', 'Netherlands', 'North Macedonia', 'Norway', 'Poland', 'Portugal',
+    'Romania', 'Russia', 'San Marino', 'Serbia', 'Slovakia', 'Slovenia', 'Spain',
+    'Sweden', 'Switzerland', 'Turkey', 'Ukraine', 'United Kingdom', 'Vatican City'
+]
+
+education_level_order = [
+    'Less than a high school diploma',
+    'High school graduates, no college',
+    'Some college or associate degree',
+    "Bachelor's degree",
+    "Master's degree",
+    "Doctoral degree"
+]
 
 def read_usbls_data(dir_path: str, file_name: str, blank_row: int):
     # Construct the full file path
@@ -94,20 +120,10 @@ def process_onsgovuk_data(file_path: str) -> pd.DataFrame:
 def process_oecd_education_data(file_path: str):
     df_oecd_education = pd.read_csv(file_path)
     df_oecd_education.rename(columns={'ISCED 2011 A education level': 'Education Level'}, inplace=True)
-    # Group the data by 'Country' and 'Education Level', to calculate the average unemployment rate over years
-    df_oecd_education = df_oecd_education.groupby(['Country', 'Education Level'])['Value'].mean().reset_index()
+    # # Group the data by 'Country' and 'Education Level', to calculate the average unemployment rate over years
+    # df_oecd_education = df_oecd_education.groupby(['Country', 'Education Level'])['Value'].mean().reset_index()
     # List of European countries according to the United Nations geoscheme for Europe.
-    european_countries = [
-        'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium',
-        'Bosnia and Herzegovina', 'Bulgaria', 'Croatia', 'Cyprus', 'Czech Republic',
-        'Denmark', 'Estonia', 'Finland', 'France', 'Georgia', 'Germany', 'Greece',
-        'Hungary', 'Iceland', 'Ireland', 'Italy', 'Kazakhstan', 'Kosovo', 'Latvia',
-        'Liechtenstein', 'Lithuania', 'Luxembourg', 'Malta', 'Moldova', 'Monaco',
-        'Montenegro', 'Netherlands', 'North Macedonia', 'Norway', 'Poland', 'Portugal',
-        'Romania', 'Russia', 'San Marino', 'Serbia', 'Slovakia', 'Slovenia', 'Spain',
-        'Sweden', 'Switzerland', 'Turkey', 'Ukraine', 'United Kingdom', 'Vatican City'
-    ]
-
+    global european_countries
     # Filter out non-European countries
     df_oecd_education_europe = df_oecd_education[df_oecd_education['Country'].isin(european_countries)]
     # Reset index after filtering
@@ -130,16 +146,8 @@ def process_oecd_education_data(file_path: str):
     pivot_df.reset_index(inplace=True)
     # Melt the DataFrame to have proper format for seaborn's barplot
     melted_df = pivot_df.melt(id_vars='Country', var_name='Education Level', value_name='Unemployment Rate')
-
-    # Define the desired order of education levels, from low to high
-    education_level_order = [
-        'Less than a high school diploma',
-        'High school graduates, no college',
-        'Some college or associate degree',
-        "Bachelor's degree",
-        "Master's degree",
-        "Doctoral degree"
-    ]
+    # Reference the education level order
+    global education_level_order
     # Convert the 'Education Level' column to a categorical type with the specified order for better viewing
     melted_df['Education Level'] = pd.Categorical(
         melted_df['Education Level'],
@@ -147,3 +155,39 @@ def process_oecd_education_data(file_path: str):
         ordered=True
     )
     return melted_df
+
+
+def process_oecd_specific_countries(file_path: str, countries: list):
+    df_oecd = pd.read_csv(file_path)
+    df_oecd.rename(columns={'ISCED 2011 A education level': 'Education Level', 'Value' : 'Unemployment Rate'}, inplace=True)
+    df_oecd_countries = df_oecd[df_oecd['Country'].isin(countries)][['Country', 'YEAR', 'Education Level', 'Unemployment Rate']]
+
+    # Reference the global variable dictionary to map ISCED defined education levels to the generic education levels
+    global isced_education_mapping
+
+    # Normalize the 'Education Level' values in the DataFrame and then map
+    df_oecd_countries['General Education Level'] = df_oecd_countries['Education Level'].str.strip().map(isced_education_mapping)
+
+    df_oecd_countries = df_oecd_countries.groupby(['Country','YEAR', 'General Education Level'])['Unemployment Rate'].mean().reset_index()
+    global education_level_order
+    # Convert the 'Education Level' column to a categorical type with the specified order for better viewing
+    df_oecd_countries['Education Level'] = pd.Categorical(
+        df_oecd_countries['General Education Level'],
+        categories=education_level_order,
+        ordered=True
+    )
+    df_oecd_countries = df_oecd_countries.pivot(index=['Country', 'YEAR'], columns='Education Level', values='Unemployment Rate')
+    return df_oecd_countries
+
+
+def process_StatsGovCN_data(educate_year_file_path: str, unemployment_file_path: str):
+    china_educated_year = pd.read_excel(educate_year_file_path)[
+        ['year', 'province', '人均受教育年限']].rename(columns={'人均受教育年限': 'Average Educated Years'})
+    china_national_educated_year = china_educated_year[china_educated_year['province'] == '全国'][
+        ['year', 'Average Educated Years']]
+    china_unemployment_rate = pd.read_excel(unemployment_file_path)[
+        ['year', 'province', '城镇登记失业率(%)']].rename(columns={'城镇登记失业率(%)': 'Unemployment Rate'})
+    china_national_unemployment_rate = china_unemployment_rate.groupby('year')['Unemployment Rate'].mean().reset_index()
+    china_merged_df = china_national_educated_year.merge(china_national_unemployment_rate, how='inner',
+                                                         on='year').set_index('year')
+    return china_merged_df
