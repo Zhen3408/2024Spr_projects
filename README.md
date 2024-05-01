@@ -1,6 +1,20 @@
 # 2024Spr_projects
+## Environment Setup
 
+To replicate the Conda environment, follow these steps:
 
+1. Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/products/individual) if you haven't already.
+2. Clone the repository or download the project files, including the `environment.yml` file.
+3. Open your terminal and navigate to the project directory.
+4. Create the Conda environment by running:
+
+   ```bash
+   conda env create -f environment.yml
+5. Activate the environment:
+
+   ```bash
+   conda activate env-name
+6. You are now ready to run the project file.
 
 
 

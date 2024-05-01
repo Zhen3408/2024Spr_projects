@@ -42,6 +42,7 @@ education_level_order = [
     "Doctoral degree"
 ]
 
+
 def read_usbls_data(dir_path: str, file_name: str, blank_row: int):
     # Construct the full file path
     full_path = os.path.join(dir_path, file_name)
