@@ -1,4 +1,51 @@
-# 2024Spr_projects
+# Analysis of Unemployment Rate
+
+---
+
+## Authors:
+- Jiahe Wei (wei51)
+- Zisong Ma (zisongm2)
+- Zhen Li (zhenli6)
+
+---
+
+## Table of Contents
+1. [Overview](#overview)
+2. [Environment Setup](#environment-setup)
+3. [Analysis](#analysis)
+   - Validation of Hypothesis 1: The unemployment rate in the United States is independent of Age
+   - Expansion on Hypothesis 1: Unemployment RATE in the United States
+   - Expansion on Hypothesis 1 (Continue): Unemployment Rate in the European Union is independent of Age
+   - Validation of Hypothesis 2: The unemployment rate in the United States is Independent of Race
+   - Expansion on Hypothesis 2: Unemployment Rate in the U.K. is independent of Race
+   - Validation of Hypothesis 3: Unemployment rate in the United States is independent of Education Level
+   - Expansion on Hypothesis 3: Unemployment Rate in the European Union is independent of Education Level
+   - Expansion on Hypothesis 3 (Continue): The Unemployment Rate detail about countries with relatively high employment-education equity in the European Countries
+   - Expansion on Hypothesis 3 (Continue): The Unemployment Rate is independent of average educated years in China
+   - Validation of Hypothesis 7: There is no relationship between Gross Domestic Product (GDP) and Unemployment Rate
+   - Expansion on Hypothesis 7: The relationship between Gross Domestic Product (GDP) growth and Unemployment Rate
+   - Expansion on Hypothesis 7 (Continue): There is no relationship between Gross Domestic Product (GDP) and Unemployment Rate of European Union
+   - Validation of Hypothesis 8: There is no relationship between the President's Political Party and Unemployment Rate
+   - Validation of Hypothesis 9: Relation between Population and the Unemployment Rate
+   - Expansion on Hypothesis 9: But given the huge size of the population, annual changes in population size may be difficult to detect directly by looking at changes in the total population. So I first calculated the growth rate of the population and followed it to observe the relationship between population change and unemployment rate
+   - Expansion on Hypothesis 9 (Continue): There is a relationship between population growth rate and Unemployment Rate of European Union
+   - Hypothesis 10: There is a relationship between minimum wage and unemployment rate
+4. [Data Sources](#data-sources)
+5. [Unit Tests for the DownloadTable Function in Scraper](#unit-tests-for-the-downloadtable-function-in-scraper)
+6. [Contribution](#contribution)
+
+---
+
+## Overview
+This project is built upon a [previous project](https://github.com/Ankita-Khiratkar/2021Fall_finals) in 2021 Fall IS597 
+course by Ankita Khiratkar (aak13) and Divyaang Agarwal (dagarw5).
+In their work, they have analyzed the unemployment rate of the United States from several aspects, we want to perform analysis
+with the most up-to-date data from the same aspects to see if their hypothesis is still valid.
+(since now is 3 years after their work and the relevant dataset should be updated).
+Furthermore, we also performed analysis from other aspects that they did not consider, to expand the breath of the analysis.
+
+---
+
 ## Environment Setup
 
 To replicate the Conda environment, follow these steps:
@@ -17,6 +64,147 @@ To replicate the Conda environment, follow these steps:
 6. You are now ready to run the project file.
 
 ---
+## Analysis
+### Vlidation of Hypothesis 1: The unemployment rate in the United States is independent of Age
+This part is for validating the hypothesis 1 made in previous work using the most up-to-date dataset (till year 2024). <br>
+They have the following hypothesis:
+**Null Hypothesis: Unemployment rate in the United States is independent of Age
+Alternative Hypothesis: Unemployment rate in the United States is NOT independent of Age**
+
+<img alt="US unemployment level with age.png" src="./chart/US unemployment level with age.png" title="US unemployment level with age"/>
+
+### Observation
+The conclusion of previous project is that Unemployment rate is highest for the age group 16 to 24 years followed by 25 
+to 34 years, then 35 to 44 years, then 45 to 54 years, followed by 55 to 64 years, and lastly 65 years and above. 
+Unemployment rate in the United States is not independent of age group. The null hypothesis is rejected.
+
+I assume the conclusion made in previous work is **valid** for now.
+
+### Expansion on Hypothesis 1: Unemployment RATE in the United States
+For the expansion of the hypothesis 1, I will first analyze the unemployment rate of the United States. 
+Since the previous work was performed on the unemployment level dataset which represents the change of 
+number of unemployed people, but there is no visualization of the proportion of unemployed people in the 
+total population. Therefore, I will perform analyze on the unemployment rate dataset which represents 
+the proportion of unemployed people in the total population.
+
+<img alt="US Unemployment Rate with age.png" src="./chart/US Unemployment Rate with age.png" title="US Unemployment Rate with age"/>
+
+### Observation
+If we compare with the plot derived from unemployment level associated with age groups, we can see there are differences. 
+Although the age group '16-24' years still shows a high value in both unemployment level and unemployment rate, the other 
+groups does not show a clear trend that the unemployment rate is inversely proportional to the age group. Most of the 
+lines are pretty close, or even intersect multiple times at some time point.
+
+Therefore, this is a **weakness** of the previous analysis. The majority reason of causing this weakness is that their 
+hypothesis is not based on precisely matched dataset. Overall, the  conclusion unemployment rate is not independent of 
+age is still **valid** since we can see from the '16-24' age groups.
+
+### Expansion on Hypothesis 1 (Continue): Unemployment Rate in the European Union is independent of Age
+This part is to check whether the unemployment rate in the European Union is independent on the Age of individuals.
+
+We have the following hypothesis:
+**Null Hypothesis: Unemployment rate in the European Union is independent of Age.
+Alternative Hypothesis: Unemployment rate in the European Union is NOT independent of Age.**
+
+<img alt="European Unemployment Rate with Age.png" src="./chart/European Unemployment Rate with Age.png" title="European Unemployment Rate with Age"/>
+
+### Observation
+* From the plot derived from the unemployment rate associated with age groups in the European Union, we can see that the unemployment rate is not independent of age group. The age group '15-24' years shows a high value in unemployment rate, which is similar to the United States. the other age groups also show a similar trend that the unemployment rate is inversely proportional to the age group. 
+
+* **Conclusion:** the unemployment rate in the European Union is not independent of age group. The null hypothesis is rejected.  
+
+### Vlidation of Hypothesis 2: The unemployment rate in the United States is Independent of Race
+This part is for validating the hypothesis 2 made in previous work using the most up-to-date dataset (till year 2024). <br>
+They have the following hypothesis:
+
+**Null Hypothesis: Unemployment rate in the United States is independent of Race <br>
+Alternative Hypothesis: Unemployment rate in the United States is NOT independent of Race**
+
+<img alt="US Unemployment Rate with Race.png" src="./chart/US Unemployment Rate with Race.png" title="US Unemployment Rate with Race"/>
+
+### Observation
+The plot shows unemployment rate is highest for Black Americans followed by Hispanic or Latino then White and then Asians. 
+
+Therefore, we can unemployment rate is not independent of race, the conclusion made in previous work is **valid** for now.
+
+One particular detail I could see from here is that, no matter what race group, the unemployment rate almost drop to the lowest point after the end of COVID-19 pandemic, compared to previous 40 years. The reason might be thanks to the recover of economic after pandemic, which is a notable observation.
+
+### Expansion on Hypothesis 2: Unemployment Rate in the U.K. is independent of Race
+This part is to check whether the unemployment rate in the United Kingdom is independent on the Race of individuals.
+
+We have the following hypothesis:
+**Null Hypothesis: Unemployment rate in the United Kingdom is independent of Race.
+Alternative Hypothesis: Unemployment rate in the United Kingdom is NOT independent of Race.**
+
+<img alt="UK Unemployment Rate with Race.png" src="./chart/UK Unemployment Rate with Race.png" title="UK Unemployment Rate with Race"/>
+
+### Observation
+The plot shows unemployment rate is always low for White. In most of the time, Black holds the highest unemployment rate among those groups.
+
+Therefore, we can say unemployment rate is not independent of race in the United Kingdom, the **null hypothesis is rejected**. The trend we observed is similar to the United States.
+
+One interesting observation is that the unemployment rate in the U.K. seems no increase during the COVID-19 pandemic, which is different from the United States. The reason might be the different policies and economic conditions in the two countries.
+
+### Validation of Hypothesis 3: Unemployment rate in the United States is independent of Education Level
+This part is for validating the hypothesis 3 made in previous work using the most up-to-date dataset (till year 2024). <br>
+They have the following hypothesis:
+
+**Null Hypothesis: Unemployment rate in the United States is independent of Race <br>
+Alternative Hypothesis: Unemployment rate in the United States is NOT independent of Race**
+
+<img alt="US Unemployment Level with Education.png" src="./chart/US Unemployment Level with Education.png" title="US Unemployment Rate with Education"/>
+
+### Observation
+The plot shows that the unemployment rate is inversely related to the education level. Even after experiencing the impact of the COVID-19 pandemic on the job market.Unemployment rate still persist the trend that is lower for those with higher education level.
+
+Therefore, we can unemployment rate is not independent of educational level, the conclusion made in previous work is **valid** for now.
+
+### Expansion on Hypothesis 3: Unemployment Rate in the European Union is independent of Education Level
+This part is to check whether the unemployment rate in the European Countries is independent on the education level of individuals.
+
+We have the following hypothesis:
+**Null Hypothesis: Unemployment rate in the European Countries is independent of Education Level.
+Alternative Hypothesis: Unemployment rate in the European Countries is NOT independent of Education Level.**
+
+<img alt="European Unemployment Rate by Education Level.png" src="./chart/European Unemployment Rate by Education Level.png" title="European Unemployment Rate by Education Level"/>
+
+### Observation
+The plot shows unemployment rate is always low for group with less than a high school diploma in most of those European Countries. If we look at the detail, we could observe the trend that the unemployment rate is inversely related to the education level.
+
+Therefore, we can say unemployment rate is inversely related to the education level for European Countries. the **null hypothesis is rejected**. The trend we observed is similar to the United States.
+
+### Expansion on Hypothesis 3 (Continue): The Unemployment Rate detail about countries with relatively high employment-education equity in the European Countries
+Using standard deviation as a measure to show how spread out the unemployment rates are for different education levels within each country. A smaller standard deviation would indicate that the unemployment rates are more uniform across different education levels, suggesting higher equity.
+
+<img alt="Unemployment Rate in Iceland by Education Level.png" src="./chart/Unemployment Rate in Iceland by Education Level.png" title="Unemployment Rate in Iceland by Education Level">
+<img alt="Unemployment Rate in Luxembourg by Education Level.png" src="./chart/Unemployment Rate in Luxembourg by Education Level.png" title="Unemployment Rate in Luxembourg by Education Level">
+<img alt="Unemployment Rate in Netherlands by Education Level.png" src="./chart/Unemployment Rate in Netherlands by Education Level.png" title="Unemployment Rate in Netherlands by Education Level">
+<img alt="Unemployment Rate in UK by Education Level.png" src="./chart/Unemployment Rate in UK by Education Level.png" title="Unemployment Rate in UK by Education Level">
+
+### Observation
+The plot shows that the unemployment rate is relatively low for all education levels in those countries. Even though among those countries, the unemployment rate is still related to the education level. As we can see most of the time, the unemployment rate is always higher for those with less than a high school diploma. One exception is Iceland, there shows no obvious unemployment rate difference among different education level groups.
+
+Also, the unemployment rate in those countries did not show a significant fluctuation during the COVID-19 pandemic, which is different from the United States. Seems like the job market circumstance in those countries is more stabled during the pandemic.
+
+### Expansion on Hypothesis 3 (Continue): The disparity difference of Educational-Level-associated Unemployment Rate in the United States and Iceland 
+Since we found that Iceland has the least disparity between different education-level groups. We want to see how the United States' disparity compared with Iceland over time.
+
+<img alt="US Iceland std of Unemployment Rate.png" src="./chart/US Iceland std of Unemployment Rate.png" title="US Iceland Standard Deviation of Unemployment Rate across Education Level">
+
+### Expansion on Hypothesis 3 (Continue): The Unemployment Rate is independent of average educated years in China
+This part is to check whether the unemployment rate in the China is independent of the average educated years of individuals.
+
+We have the following hypothesis:
+**Null Hypothesis: Unemployment rate in China is independent of average educated years.
+Alternative Hypothesis: Unemployment rate in China is NOT independent of average educated years.
+
+<img alt="China Unemployment Rate by Average Educated Year.png" src="./chart/China Unemployment Rate by Average Educated Year.png" title="China Unemployment Rate by Average Educated Year">
+
+### Observation
+The plot shows that the unemployment rate is not independent of the average educated years in China. As the average educated year is increasing, the unemployment rate is decreasing annually in China. The unemployment rate is inversely related to the average educated years. 
+The null hypothesis is **rejected**.
+One interesting observation is the there shows a drop in the average educated year and an increase in the unemployment rate in 2020, which is different from the trend in other years. The reason might be the impact of the anti-covid policy in China.
+
 
 ### Vlidation of Hypothesis 7: There is no relationship between Gross Domestic Product (GDP) and Unemployment Rate
 This part is for validating the hypothesis 1 made in previous work using the most up-to-date dataset (till year 2024).
@@ -185,18 +373,15 @@ Thus, we can say that there is relationship between the minimum wage and the Une
 ---
 
 
-# Reference:
-https://data.bls.gov/PDQWeb/ln
-https://ec.europa.eu/eurostat/databrowser/view/tepsr_wc170__custom_11059624/default/table?lang=en
-https://www.ethnicity-facts-figures.service.gov.uk/work-pay-and-benefits/unemployment-and-economic-inactivity/unemployment/latest/#data-sources
-https://www.ons.gov.uk/employmentandlabourmarket/peoplenotinwork/unemployment/timeseries/mgsx/lms
-https://stats.oecd.org/viewhtml.aspx?datasetcode=EAG_NEAC&lang=en#
-National Bureau of Statistics of China   
-https://www.stats.gov.cn/sj/   
-https://www.census.gov/programs-surveys/popest/technical-documentation/research/evaluation-estimates/2020-evaluation-estimates/2010s-state-total.html   
-https://www.bls.gov/charts/state-employment-and-unemployment/state-unemployment-rates-animated.htm
-
-
+# Data Sources:
+* https://data.bls.gov/PDQWeb/ln
+* https://ec.europa.eu/eurostat/databrowser/view/tepsr_wc170__custom_11059624/default/table?lang=en
+* https://www.ethnicity-facts-figures.service.gov.uk/work-pay-and-benefits/unemployment-and-economic-inactivity/unemployment/latest/#data-sources
+* https://www.ons.gov.uk/employmentandlabourmarket/peoplenotinwork/unemployment/timeseries/mgsx/lms
+* https://stats.oecd.org/viewhtml.aspx?datasetcode=EAG_NEAC&lang=en# 
+* https://www.stats.gov.cn/sj/   
+* https://www.census.gov/programs-surveys/popest/technical-documentation/research/evaluation-estimates/2020-evaluation-estimates/2010s-state-total.html   
+* https://www.bls.gov/charts/state-employment-and-unemployment/state-unemployment-rates-animated.htm
 
 
 ---
@@ -217,3 +402,13 @@ The unit tests designed for the `DownloadTable` function cover various scenarios
 These tests are intended to guarantee that the `DownloadTable` function operates reliably across different scenarios, helping to prevent issues during practical usage.
 
 --- 
+## Contribution
+* Zhen Li:
+  - Final_project_zl.ipynb
+  - utils.py
+* Jiahe Wei:
+  - Final_project_wih.ipynb
+  - main.py
+* Zisong Ma:
+  - US_Industry_Analysis.ipynb
+  - BLS_scraper_with_tests.py
