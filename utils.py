@@ -56,7 +56,7 @@ def read_usbls_data(dir_path: str, file_name: str, blank_row: int) -> pd.DataFra
 
        Returns:
        pandas.DataFrame: A DataFrame indexed by 'Year' and 'Month' columns, with one additional column
-                         representing the data for the specific age group, labeled by the file name prefix.
+                         representing the unemployment rate for the specific age group, labeled by the file name prefix.
 
        """
     # Construct the full file path
@@ -75,6 +75,22 @@ def read_usbls_data(dir_path: str, file_name: str, blank_row: int) -> pd.DataFra
 
 
 def concatenate_usbls_files(dir_path: str, blank_row: int, year_range: tuple = (1980, 2024)):
+    """
+    Reads multiple Excel files from a specified directory, each containing US Bureau of Labor Statistics data.
+    Each file is processed to skip the initial rows up to the specified blank row and restructured into a long format.
+    The data from all files is then concatenated into a single DataFrame.
+
+    Parameters:
+    dir_path (str): The directory path where the Excel files are located.
+    blank_row (int): The number of initial rows to skip in the Excel files (0-indexed), typically used to
+                     skip header information or blank rows.
+    year_range (tuple): A tuple containing the start and end years for filtering the data. Default is (1980, 2024).
+
+    Returns:
+    pandas.DataFrame: A DataFrame indexed by 'Year' and 'Month' columns, with additional columns
+                      representing the unemployment rate for the specific age groups, labeled by the file name prefix.
+                      The DataFrame includes data from all the Excel files in the specified directory.
+    """
     start_year, end_year = year_range
     combined_df = None
     files = os.listdir(dir_path)
@@ -95,6 +111,20 @@ def concatenate_usbls_files(dir_path: str, blank_row: int, year_range: tuple = (
 
 
 def read_eurostat_data(dir_path: str, file_name: str) -> pd.DataFrame:
+    """
+    Reads an Excel file containing Eurostat data from the specified directory,
+    removes unnecessary rows and columns, and restructures the data into a long format with
+    'Year' as the index and the file name prefix as the column name.
+
+    Parameters:
+    dir_path (str): The directory path where the Excel file is located.
+    file_name (str): The name of the Excel file, including the extension. The part before the extension
+                     is used to label the data column.
+
+    Returns:
+    pandas.DataFrame: A DataFrame indexed by 'Year', with one additional column
+                      representing the unemployment rate, labeled by the file name prefix.
+    """
     full_path = os.path.join(dir_path, file_name)
     df_eu_age = pd.read_excel(full_path, skiprows=10)
     df_eu_age = df_eu_age.iloc[1:-5]  # Remove last 5 rows
@@ -106,6 +136,19 @@ def read_eurostat_data(dir_path: str, file_name: str) -> pd.DataFrame:
 
 
 def merge_eurostat_data(dir_path: str) -> pd.DataFrame:
+    """
+    Reads multiple Excel files from a specified directory, each containing Eurostat data.
+    Each file is processed to remove unnecessary rows and columns and restructured into a long format.
+    The data from all files is then merged into a single DataFrame.
+
+    Parameters:
+    dir_path (str): The directory path where the Excel files are located.
+
+    Returns:
+    pandas.DataFrame: A DataFrame indexed by 'Year', with additional columns
+                      representing the unemployment rate from each file, labeled by the file name prefix.
+                      The DataFrame includes unemployment rate from all the Excel files in the specified directory.
+    """
     combined_df = None
     for file_name in os.listdir(dir_path):
         if file_name.endswith('.xlsx'):
@@ -136,11 +179,11 @@ def process_onsgovuk_data(df_uk: pd.DataFrame) -> pd.DataFrame:
     ...         'value': ['5', '6', '4', '7']}
     >>> df_uk = pd.DataFrame(data)
     >>> processed_df = process_onsgovuk_data(df_uk)
-    >>> print(repr(processed_df))
-    ethnicity   Asian  Black
-    time
-    2020-01-01    5.0    6.0
-    2020-02-01    4.0    7.0
+    >>> processed_df = processed_df.reset_index()
+    >>> print(processed_df)
+    ethnicity       time  Asian  Black
+    0         2020-01-01    5.0    6.0
+    1         2020-02-01    4.0    7.0
     """
     df_uk['time'] = pd.to_datetime(df_uk['time'].str.split('-').str[0], format='%b%Y')  # Extract the month and year
     # Ensure the 'value' column is numeric
@@ -180,7 +223,7 @@ def process_oecd_education_data(df_oecd_education: pd.DataFrame) -> pd.DataFrame
     >>> df_oecd_education = pd.DataFrame(data)
     >>> processed_data = process_oecd_education_data(df_oecd_education)
     >>> processed_data
-            Country                    Education Level  Unemployment Rate
+        Country                    Education Level  Unemployment Rate
     0    France                    Doctoral degree                5.0
     1   Germany                    Doctoral degree                NaN
     2     Italy                    Doctoral degree                NaN
@@ -233,6 +276,36 @@ def process_oecd_education_data(df_oecd_education: pd.DataFrame) -> pd.DataFrame
 
 
 def process_oecd_specific_countries(df_oecd: pd.DataFrame, countries: list):
+    """
+    Filters the OECD DataFrame for specific countries, renames columns for clarity, and maps education levels to a
+    more generic classification. It then groups the data by 'Country', 'YEAR', and 'General Education Level' to
+    calculate the average unemployment rate. The 'Education Level' column is converted to a categorical type with
+    a specified order for better viewing.
+
+    Parameters:
+    df_oecd (pd.DataFrame): A DataFrame containing OECD data with columns 'Country', 'YEAR', 'ISCED 2011 A education level', and 'Value'.
+    countries (list): A list of countries to filter the DataFrame.
+
+    Returns:
+    pd.DataFrame: A DataFrame with the average unemployment rate for each country, year, and general education level.
+
+    DocTest:
+    >>> data = {'Country': ['France', 'Germany', 'Spain', 'Italy'],
+    ...         'YEAR': [2020, 2020, 2020, 2020],
+    ...         'ISCED 2011 A education level': ['Doctoral or equivalent education', 'Upper secondary education',
+    ...                                         'Less than primary education', 'Master’s or equivalent education'],
+    ...         'Value': [5, 15, 10, 8]}
+    >>> df_oecd = pd.DataFrame(data)
+    >>> countries = ['France', 'Germany']
+    >>> processed_data = process_oecd_specific_countries(df_oecd, countries)
+    >>> expected_data = {'Country': ['France', 'Germany'],
+    ...                  'YEAR': [2020, 2020],
+    ...                  'Education Level': ['Doctoral degree', 'High school graduates, no college'],
+    ...                  'Unemployment Rate': [5.0, 15.0]}
+     >>> expected_df = pd.DataFrame(expected_data).pivot(index=['Country', 'YEAR'], columns='Education Level', values='Unemployment Rate')
+    >>> processed_data.fillna(0).equals(expected_df.fillna(0))
+    True
+    """
     df_oecd.rename(columns={'ISCED 2011 A education level': 'Education Level', 'Value': 'Unemployment Rate'},
                    inplace=True)
     df_oecd_countries = df_oecd[df_oecd['Country'].isin(countries)][
@@ -260,6 +333,19 @@ def process_oecd_specific_countries(df_oecd: pd.DataFrame, countries: list):
 
 
 def process_StatsGovCN_data(china_educated_year: pd.DataFrame, unemployment_file_path: str):
+    """
+    Processes and merges educational years data with unemployment data specifically for national level data in China.
+    The function filters the educational data for the national level and renames the columns for clarity.
+    It also reads unemployment data from an Excel file, calculates the mean unemployment rate per year, and then merges
+    both datasets on the 'year' column. The resulting DataFrame is indexed by 'year'.
+
+    Parameters:
+    china_educated_year (pd.DataFrame): DataFrame containing columns 'year', 'province', and '人均受教育年限' with education data.
+    unemployment_file_path (str): Path to the Excel file containing unemployment data with columns 'year', 'province', and '城镇登记失业率(%)'.
+
+    Returns:
+    pd.DataFrame: DataFrame indexed by 'year' with columns 'Average Educated Years' and 'Unemployment Rate'.
+    """
     china_educated_year = china_educated_year[
         ['year', 'province', '人均受教育年限']].rename(columns={'人均受教育年限': 'Average Educated Years'})
     china_national_educated_year = china_educated_year[china_educated_year['province'] == '全国'][
