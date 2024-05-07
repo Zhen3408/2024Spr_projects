@@ -61,7 +61,7 @@ To replicate the Conda environment, follow these steps:
 
    ```bash
    conda activate env-name
-6. You are now ready to run the project file.
+6. You are now ready to run the project files. Our main work are in the three jupyter notebook files: `Final_project_zl.ipynb`, `Final_project_wjh.ipynb`, and `US_Industry_Analysis.ipynb`.
 
 ---
 ## Analysis
