@@ -27,7 +27,7 @@ Null Hypothesis: There is NO relationship between Gross Domestic Product (GDP) a
 
 Alternative Hypothesis: There is relationship between Gross Domestic Product (GDP) and Unemployment Rate
 
-![img.png](img.png)
+<img alt="USA Unemployment Rate.png" src="./chart/USA Unemployment Rate.png" title="USA Unemployment Rate"/>
 
 ### Observation
 1.From the above plot, we observe that the unemployment rate is inversely related to the GDP. Notice, whenever the GDP increases and the unemployment rate decreases.
@@ -43,7 +43,7 @@ The relationship between Gross Domestic Product (GDP) growth and Unemployment Ra
 
 Instead of looking directly at total GDP and the unemployment rate, it is easier to see the relationship between them by calculating the annual GDP growth.
 
-![img_1.png](img_1.png)
+<img alt="USA Unemployment Rate Growth.png" src="./chart/USA Unemployment Rate Growth.png" title="USA Unemployment Rate Growth"/>
 
 ### Observations
 From the above graph we can easily see that unemployment rate is inversely proportional to GDP. Note that whenever GDP increases, the unemployment rate decreases.
@@ -61,8 +61,8 @@ Null Hypothesis: There is NO relationship between Gross Domestic Product (GDP) a
 
 Alternative Hypothesis: There is relationship between Gross Domestic Product (GDP) and Unemployment Rate
 
-![img_2.png](img_2.png)
-![img_3.png](img_3.png)
+<img alt="European union Unemployment Rate.png" src="./chart/European union Unemployment Rate.png" title="European union Unemployment Rate"/>
+<img alt="European union Unemployment Rate Growth.png" src="./chart/European union Unemployment Rate Growth.png" title="European union Unemployment Rate Growth"/>
 
 ### Observations
 The EU GPD data seems to be more volatile than the US GDP data.
@@ -82,7 +82,8 @@ Null Hypothesis: There is NO relationship between President's Political Party an
 
 Alternative Hypothesis: There is relationship between President's Political Party and the Unemployment Rate
 
-![img_4.png](img_4.png)
+<img alt="USA Politicial Party.png" src="./chart/USA Politicial Party.png" title="USA Politicial Party"/>
+
 
 ### Observation
 Though there are many factors that contribute to the Unemployment rate in the country, from the above plot we notice that most of the times when Democratic Party's President was in power, the unemployment rate reduced. But, there are also some instances when the unemployment rate increased under Democratic Party like in the year 1961, 1980, and 2009.
@@ -101,8 +102,11 @@ Null Hypothesis: There is NO relationship between the population and the Unemplo
 
 Alternative Hypothesis: There is relationship between the population and the Unemployment Rat
 
-![img_5.png](img_5.png)![img_6.png](img_6.png)
-![img_7.png](img_7.png)![img_8.png](img_8.png)
+<img alt="Midwest Region Unemployment rate.png" src="./chart/Midwest Region Unemployment rate.png" title="Midwest Region Unemployment rate"/>
+<img alt="NorthEAST Region Unemployment rate.png" src="./chart/NorthEAST Region Unemployment rate.png" title="Northeast Region Unemployment rate"/>
+<img alt="South Region Unemployment rate.png" src="./chart/South Region Unemployment rate.png" title="South Region Unemployment rate"/>
+<img alt="West Region Unemployment rate.png" src="./chart/West Region Unemployment rate.png" title="West Region Unemployment rate"/>
+
 
 ### Observation:
 The barplots above represents the mean of the unemployment rates of all states in a region and sum of the population (x10^7) for all the states in that region.
@@ -116,8 +120,10 @@ For Hypothesis 9, I calculated the population growth rate and compared the relat
 ### Expansion on Hypothesis 8：
 But given the huge size of the population, annual changes in population size may be difficult to detect directly by looking at changes in the total population. So I first calculated the growth rate of the population and followed it to observe the relationship between population change and unemployment rate.
 
-![img_9.png](img_9.png)![img_10.png](img_10.png)
-![img_11.png](img_11.png)![img_12.png](img_12.png)
+<img alt="Midwest Region Unemployment rate growth.png" src="./chart/Midwest Region Unemployment rate growth.png" title="Midwest Region Unemployment rate growth"/>
+<img alt="Northeast Region Unemployment rate growth.png" src="./chart/Northeast Region Unemployment rate growth.png" title="Northeast Region Unemployment rate growth"/>
+<img alt="South Region Unemployment rate growth.png" src="./chart/South Region Unemployment rate growth.png" title="South Region Unemployment rate growth"/>
+<img alt="West Region Unemployment rate growth.png" src="./chart/West Region Unemployment rate growth.png" title="West Region Unemployment rate growth"/>
 
 ### Observation:
 By looking at the Midwestern, Northeastern, and Southern regions of the United States, you can actually see that there are some connections between them.
@@ -134,7 +140,9 @@ Null Hypothesis: There is NO relationship between the population and the Unemplo
 
 Alternative Hypothesis: There is relationship between the population and the Unemployment Rate
 
-![img_13.png](img_13.png)![img_14.png](img_14.png)
+<img alt="European union Unemployment Rate and Population.png" src="./chart/European union Unemployment Rate and Population.png" title="European union Unemployment Rate and Population.png"/>
+<img alt="European union Population Growth and Unemployment Rates.png" src="./chart/European union Population Growth and Unemployment Rates.png" title="European union Population Growth and Unemployment Rates"/>
+
 
 ### Observation:
 Look at the European data reveals that there is also some influential relationship between the population growth rate and the unemployment rate.
@@ -152,7 +160,7 @@ Null Hypothesis: There is a relationship between the minimum wage and the unempl
 
 Alternative hypothesis: There is no relationship between the minimum wage and the unemployment rate.
 
-![img_15.png](img_15.png)
+<img alt="USA minimum Wage and Unemployment Rate.png" src="./chart/USA minimum Wage and Unemployment Rate.png" title="USA minimum Wage and Unemployment Rate"/>
 
 ### Observation
 According to the chart, we can clearly find that there is a positive relationship between the minimum wage and the unemployment rate in the United States. However, it seems difficult to distinguish the order of causality between them.   
@@ -163,7 +171,7 @@ As a result of the impact of Covid-19, the U.S. minimum wage has been declining 
 
 Thus, we can say that there is relationship between the minimum wage and the Unemployment Rate in the United States and we accept the null hypothesis.
 
-![img_16.png](img_16.png)
+<img alt="European union minimum Wage and Unemployment Rate.png" src="./chart/European union minimum Wage and Unemployment Rate.png" title="European union minimum Wage and Unemployment Rate"/>
 
 ### Observation
 According to the graph, we can see that the minimum wage in the European Union has been in a steady upward trend until recently, when it declined a little bit. However, the overall amount is still lower than that of the United States. 
